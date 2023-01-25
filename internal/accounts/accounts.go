@@ -15,6 +15,6 @@ func Authentification(userName string, password string) (count int64) {
 		panic("failed to connect database.")
 	}
 	db.AutoMigrate(&domain.User{})
-	db.Model(&domain.User{}).Where("username = ?", userName).Where("password = ?", password).Count(&count)
+	db.Model(&domain.User{}).Where("user_name = ?", userName).Where("password = ?", password).Count(&count)
 	return count
 }
