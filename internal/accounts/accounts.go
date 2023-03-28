@@ -8,7 +8,8 @@ import (
 )
 
 // ユーザ認証
-func Authentification(userName string, password string) (count int64) {
+
+func AuthentificationUsers(userName string, password string) (count int64) {
 	db, err := gorm.Open(sqlite.Open("userData.db"), &gorm.Config{})
 	db.AutoMigrate(&domain.User{})
 	if err != nil {

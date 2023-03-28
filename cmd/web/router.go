@@ -8,7 +8,9 @@ import (
 )
 
 func router() http.Handler {
+	// patternListenMux を返す
 	mux := pat.New()
+	// 各パスの設定・Get/Post 設定
 	mux.Get("/login", http.HandlerFunc(handlers.LoginHandler))
 	mux.Post("/create", http.HandlerFunc(handlers.CreateHandler))
 	mux.Get("/delete", http.HandlerFunc(handlers.DeleteHandler))

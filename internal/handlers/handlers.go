@@ -18,6 +18,7 @@ type loginUser struct {
 }
 
 // ログインページ
+
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err := renderPage(w, "html/loginPage.html", "")
 	if err != nil {
@@ -26,6 +27,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ユーザ新規登録ページ
+
 func NewResistrationHandler(w http.ResponseWriter, r *http.Request) {
 	err := renderPage(w, "html/newResistrationPage.html", "")
 	if err != nil {
@@ -34,6 +36,7 @@ func NewResistrationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //ユーザ情報削除ページ
+
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	err := renderPage(w, "html/deleteAccountPage.html", "")
 	if err != nil {
@@ -42,14 +45,16 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // 商品紹介ページ
+
 func MainHandler(w http.ResponseWriter, r *http.Request) {
-	err := renderPage(w, "html/mainPage.html", nowLoginUser.userName)
+	err := renderPage(w, "html/mainPage.html", loginUserNow.userName)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
 // ログイン認証処理
+
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	userName := r.FormValue("userName")
 	password := r.FormValue("password")
@@ -58,9 +63,9 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	if isUserName == "" || isPassword == "" {
 		http.Redirect(w, r, "/login", http.StatusFound)
 	}
-	count := accounts.Authentification(userName, password)
+	count := accounts.AuthentificationUsers(userName, password)
 	if count != 0 {
-		loginUserNow := New(userName, password)
+		userInfo := getNewUserInfo(userName, password)
 		http.Redirect(w, r, "/main", http.StatusFound)
 	} else {
 		http.Redirect(w, r, "/login", http.StatusFound)
@@ -68,7 +73,8 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //ログインユーザ名を取得する処理
-func New(userName string, password string) *loginUser {
+
+func getNewUserInfo(userName string, password string) *loginUser {
 	return &loginUser{userName: userName, password: password}
 }
 
@@ -86,7 +92,7 @@ func DeleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if isUserName == "" || isPassword == "" {
 		http.Redirect(w, r, "/delete", http.StatusFound)
 	}
-	count := accounts.Authentification(userName, password)
+	count := accounts.AuthentificationUsers(userName, password)
 	if count != 0 {
 		db.Where("user_name = ?", userName).Where("password = ?", password).Delete(&domain.User{})
 		http.Redirect(w, r, "/login", http.StatusFound)
@@ -109,7 +115,7 @@ func NewResistrationPostHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	db.AutoMigrate(&domain.User{})
-	count := accounts.Authentification(userName, password)
+	count := accounts.AuthentificationUsers(userName, password)
 	if count != 0 {
 		http.Redirect(w, r, "/newResistration", http.StatusFound)
 	} else {
